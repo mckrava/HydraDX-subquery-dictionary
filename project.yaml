@@ -1,0 +1,58 @@
+specVersion: 0.0.1
+description: A subquery project provide dictionary data & service for a substrate-based HydraDX network
+repository: 'https://github.com/subquery/subql-dictionary'
+schema: ./schema.graphql
+network:
+  endpoint: 'wss://archive.snakenet.hydradx.io'
+  types:
+    AssetPair:
+      asset_in: AssetId
+      asset_out: AssetId
+    Amount: i128
+    AmountOf: Amount
+    Address: AccountId
+    OrmlAccountData:
+      free: Balance
+      frozen: Balance
+      reserved: Balance
+    BalanceInfo:
+      amount: Balance
+      assetId: AssetId
+    Chain:
+      genesisHash: Vec<u8>
+      lastBlockHash: Vec<u8>
+    CurrencyId: AssetId
+    CurrencyIdOf: AssetId
+    Intention:
+      who: AccountId
+      asset_sell: AssetId
+      asset_buy: AssetId
+      amount: Balance
+      discount: bool
+      sell_or_buy: IntentionType
+    IntentionId: Hash
+    IntentionType:
+      _enum:
+        - SELL
+        - BUY
+    LookupSource: AccountId
+    OrderedSet: Vec<AssetId>
+    Price: Balance
+    Fee:
+      numerator: u32
+      denominator: u32
+  typesAlias:
+    tokens:
+      AccountData: OrmlAccountData
+dataSources:
+  - name: main
+    kind: substrate/Runtime
+    startBlock: 1
+    mapping:
+      handlers:
+        - handler: handleBlock
+          kind: substrate/BlockHandler
+        - handler: handleEvent
+          kind: substrate/EventHandler
+        - handler: handleCall
+          kind: substrate/CallHandler
